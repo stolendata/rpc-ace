@@ -69,7 +69,8 @@ if( preg_match("/^([[:xdigit:]]{64})$/", $query) === 1 ) // block hash?
                 foreach( $val as $txid ) // list of txids
                 {
                     echo "$id: $txid<br />";
-                    $tx = $rpc->getrawtransaction( $txid, 1 );
+                    if( ($tx = $rpc->getrawtransaction($txid, 1)) === false )
+                        continue;
                     foreach( $tx['vout'] as $entry )
                         echo "     {$entry['value']} -> {$entry['scriptPubKey']['addresses'][0]}<br />";
                 }
