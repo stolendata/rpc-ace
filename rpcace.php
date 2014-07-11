@@ -1,9 +1,10 @@
 <?php
 $timeThen = microtime( true );
 
-$rpcAceVersion = '0.6.2';
+$rpcAceVersion = '0.6.3';
 
 $coinName = 'Somecoin';
+$coinHome = 'http://www.somecoin.org/';
 $rpcHttps = false;
 $rpcHost = '127.0.0.1';
 $rpcPort = 12345;
@@ -55,7 +56,7 @@ $rpc = new Bitcoin( $rpcUser, $rpcPass, $rpcHost, $rpcPort, $rpcHttps === true ?
 $info = $rpc->getinfo();
 $query = $_SERVER['QUERY_STRING'];
 
-echo "<tr><td class=\"urgh\"><b>$coinName</b> block explorer</td><td>Blocks:</td><td><a href=\"?{$info['blocks']}\">{$info['blocks']}</a></td></tr>";
+echo "<tr><td class=\"urgh\"><b><a href=\"$coinHome\">$coinName</a></b> block explorer</td><td>Blocks:</td><td><a href=\"?{$info['blocks']}\">{$info['blocks']}</a></td></tr>";
 echo "<tr><td /><td>Difficulty:</td><td>{$info['difficulty']}</td></tr>";
 echo "<tr><td>Powered by <a href=\"https://github.com/stolendata/rpc-ace/\">RPC Ace</a> v$rpcAceVersion (RPC AnyCoin Explorer)</td><td>Network hashrate: </td><td>" . round( $rpc->getnetworkhashps() / (1024*1024), 2, PHP_ROUND_HALF_DOWN ) . ' MH/s</td></tr><tr><td> </td><td /><td /></tr></table>';
 
@@ -103,7 +104,8 @@ else // list of blocks
         foreach( $block['tx'] as $txid )
         {
             $txCount++;
-            $tx = $rpc->getrawtransaction( $txid, 1 );
+            if( ($tx = $rpc->getrawtransaction($txid, 1)) === false )
+                continue;
             foreach( $tx['vout'] as $vout )
                 $valueOut += $vout['value'];
         }
@@ -113,10 +115,8 @@ else // list of blocks
         $i--;
     }
 
-    $newer = $offset + $numBlocksPerPage;
-    $older = $offset - $numBlocksPerPage;
-    $newer = $offset < $info['blocks']  ? "<a href=\"?$newer\">&lt; Newer</a>" : '&lt; Newer';
-    $older = $i != -1 ? "<a href=\"?$older\">Older &gt;</a>" : 'Older &gt;';
+    $newer = $offset < $info['blocks'] ? '<a href="?' . ( $offset + $numBlocksPerPage ) . '">&lt; Newer</a>' : '&lt; Newer';
+    $older = $i != -1 ? '<a href="?' . ( $offset - $numBlocksPerPage ) . '">Older &gt;</a>' : 'Older &gt;';
     $i++;
 
     echo "<tr><td colspan=\"5\" class=\"urgh\"> </td></tr><tr><td colspan=\"6\">$newer          $older</td></tr>";
