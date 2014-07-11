@@ -19,7 +19,6 @@ Place `rpcace.php` and `easybitcoin.php` ([get it here](https://github.com/aceat
 
     $coinName = 'Somecoin';                  // Coin name/title for the explorer
     $coinHome = 'http://www.somecoin.org/';  // Coin website
-    $rpcHttps = false;                       // Set to false for http, true for https
     $rpcHost = '127.0.0.1';                  // Host/IP for the daemon
     $rpcPort = 12345;                        // RPC port for the daemon
     $rpcUser = 'username';                   // 'rpcuser' from somecoin.conf

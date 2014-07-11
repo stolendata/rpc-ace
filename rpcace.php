@@ -5,7 +5,6 @@ $rpcAceVersion = '0.6.3';
 
 $coinName = 'Somecoin';
 $coinHome = 'http://www.somecoin.org/';
-$rpcHttps = false;
 $rpcHost = '127.0.0.1';
 $rpcPort = 12345;
 $rpcUser = 'username';
@@ -52,7 +51,7 @@ tr.illu:hover { background-color: #2c58b0; }
 </head>
 <body><div class="mid"><table>
 <?php
-$rpc = new Bitcoin( $rpcUser, $rpcPass, $rpcHost, $rpcPort, $rpcHttps === true ? 'https' : 'http' );
+$rpc = new Bitcoin( $rpcUser, $rpcPass, $rpcHost, $rpcPort );
 $info = $rpc->getinfo();
 $query = $_SERVER['QUERY_STRING'];
 
