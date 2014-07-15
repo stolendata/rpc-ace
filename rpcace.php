@@ -83,7 +83,8 @@ if( preg_match("/^([[:xdigit:]]{64})$/", $query) === 1 ) // block hash?
                 foreach( $val as $txid ) // list of txids
                 {
                     echo "$id: $txid<br />";
-                    $tx = $rpc->getrawtransaction( $txid, 1 );
+                    if( ($tx = $rpc->getrawtransaction($txid, 1)) === false )
+                        continue;
                     foreach( $tx['vout'] as $entry )
                         if( $entry['value'] > 0.0 )
                             // nasty number formatting trick that hurts my soul, but it had to be done...
