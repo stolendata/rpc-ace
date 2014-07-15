@@ -7,7 +7,7 @@ RPC Ace is a simple alternative block explorer written in PHP. It does not gener
 
 A database-less explorer has a few drawbacks - most notably, RPC Ace cannot keep track of addresses or total coins generated, and as it uses RPC calls to parse blocks a transaction-heavy block chain (such as Bitcoin) can incur heavy CPU usage and/or long page generation times. RPC Ace's primary use is quick access to oversight of a block chain; for in-depth needs it's recommended to run a tallying explorer such as Abe.
 
-RPC Ace has been tested to work with Bitcoin, Litecoin, Dogecoin, Solcoin and a few other block chains, but as it's still a beta stage mishmash it may contain bugs.
+RPC Ace has been tested to work with Bitcoin, Litecoin, Dogecoin, Solcoin and a few other block chains, but as it's still a beta stage mishmash it may contain bugs. 0.6.5 introduced experimental PoS support which has so far only been tested to work with CryptCoin.
 
 
 Setting up RPC Ace
@@ -19,6 +19,7 @@ Place `rpcace.php` and `easybitcoin.php` ([get it here](https://github.com/aceat
 
     $coinName = 'Somecoin';                  // Coin name/title for the explorer
     $coinHome = 'http://www.somecoin.org/';  // Coin website
+    $coinPoS = false;                        // Experimental; only tested on CryptCoin so far
     $rpcHost = '127.0.0.1';                  // Host/IP for the daemon
     $rpcPort = 12345;                        // RPC port for the daemon
     $rpcUser = 'username';                   // 'rpcuser' from somecoin.conf

@@ -1,17 +1,18 @@
 <?php
 $timeThen = microtime( true );
 
-$rpcAceVersion = '0.6.3';
+$rpcAceVersion = '0.6.5';
 
 $coinName = 'Somecoin';
 $coinHome = 'http://www.somecoin.org/';
+$coinPoS = false;    // PoS support is experimental
 $rpcHost = '127.0.0.1';
 $rpcPort = 12345;
 $rpcUser = 'username';
 $rpcPass = 'password';
 $numBlocksPerPage = 12;
 
-$blockFields = ['hash', 'confirmations', 'size', 'height', 'version', 'merkleroot', 'time', 'nonce', 'bits', 'difficulty'];
+$blockFields = [ 'hash', 'confirmations', 'size', 'height', 'version', 'merkleroot', 'time', 'nonce', 'bits', 'difficulty', 'mint', 'proofhash' ];
 
 require_once( 'easybitcoin.php' );
 ?>
@@ -51,13 +52,26 @@ tr.illu:hover { background-color: #2c58b0; }
 </head>
 <body><div class="mid"><table>
 <?php
+$query = $_SERVER['QUERY_STRING'];
 $rpc = new Bitcoin( $rpcUser, $rpcPass, $rpcHost, $rpcPort );
 $info = $rpc->getinfo();
-$query = $_SERVER['QUERY_STRING'];
+if( $coinPoS === true )
+{
+    $diffNom = 'Difficulty &middot; PoS';
+    $diff = sprintf( '%.4f', $info['difficulty']['proof-of-work'] ) . ' &middot; ' . sprintf( '%.4f', $info['difficulty']['proof-of-stake'] );
+    $hashRate = $rpc->getmininginfo()['netmhashps'];
+}
+else
+{
+    $diffNom = 'Difficulty';
+    $diff = $info['difficulty'];
+    $hashRate = $rpc->getnetworkhashps() / 1000000;
+}
+$hashRate = sprintf( '%.2f', $hashRate );
 
 echo "<tr><td class=\"urgh\"><b><a href=\"$coinHome\">$coinName</a></b> block explorer</td><td>Blocks:</td><td><a href=\"?{$info['blocks']}\">{$info['blocks']}</a></td></tr>";
-echo "<tr><td /><td>Difficulty:</td><td>{$info['difficulty']}</td></tr>";
-echo "<tr><td>Powered by <a href=\"https://github.com/stolendata/rpc-ace/\">RPC Ace</a> v$rpcAceVersion (RPC AnyCoin Explorer)</td><td>Network hashrate: </td><td>" . round( $rpc->getnetworkhashps() / (1024*1024), 2, PHP_ROUND_HALF_DOWN ) . ' MH/s</td></tr><tr><td> </td><td /><td /></tr></table>';
+echo "<tr><td /><td>$diffNom:</td><td>$diff</td></tr>";
+echo "<tr><td>Powered by <a href=\"https://github.com/stolendata/rpc-ace/\">RPC Ace</a> v$rpcAceVersion (RPC AnyCoin Explorer)</td><td>Network hashrate: </td><td>$hashRate MH/s</td></tr><tr><td> </td><td /><td /></tr></table>";
 
 if( preg_match("/^([[:xdigit:]]{64})$/", $query) === 1 ) // block hash?
 {
@@ -69,10 +83,11 @@ if( preg_match("/^([[:xdigit:]]{64})$/", $query) === 1 ) // block hash?
                 foreach( $val as $txid ) // list of txids
                 {
                     echo "$id: $txid<br />";
-                    if( ($tx = $rpc->getrawtransaction($txid, 1)) === false )
-                        continue;
+                    $tx = $rpc->getrawtransaction( $txid, 1 );
                     foreach( $tx['vout'] as $entry )
-                        echo "     {$entry['value']} -> {$entry['scriptPubKey']['addresses'][0]}<br />";
+                        if( $entry['value'] > 0.0 )
+                            // nasty number formatting trick that hurts my soul, but it had to be done...
+                            echo '     ' . rtrim( rtrim(sprintf('%.8f', $entry['value']), '0'), '.' ) . " -> {$entry['scriptPubKey']['addresses'][0]}<br />";
                 }
             else // block fields
             {
@@ -88,7 +103,7 @@ else // list of blocks
     $offset = abs( (int)$query );
     $offset = ( !is_numeric($query) || $offset > $info['blocks'] ) ? $info['blocks'] : $offset;
 
-    echo '<table><tr><td><b>Block</b></td><td><b>Hash</b></td><td><b>Difficulty</b></td><td><b>Time (UTC)</b></td><td><b>Tx# &middot; Value out</b></td></tr><tr><td /></tr>';
+    echo "<table><tr><td><b>Block</b></td><td><b>Hash</b></td><td><b>$diffNom</b></td><td><b>Time (UTC)</b></td><td><b>Tx# &middot; Value out</b></td></tr><tr><td /></tr>";
     $n = $numBlocksPerPage;
     $i = $offset;
     while( $i >= 0 && $n-- )
