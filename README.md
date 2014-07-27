@@ -29,18 +29,10 @@ Place `rpcace.php` and `easybitcoin.php` ([get it here](https://github.com/aceat
 To get accurate transaction values your block chain must be built with full transaction indexing from the start, by setting `txindex=1` in somecoin.conf.
 
 
-Caveats
--------
+Extras
+------
 
-Some users trying to read a block chain remotely over the Internet may see PHP output `Warning: curl_setopt() [function.curl-setopt]: CURLOPT_FOLLOWLOCATION cannot be activated when in safe_mode or an open_basedir is set`. This is caused by EasyBitcoin-PHP wanting to follow HTTP redirects, without checking if PHP's open_basedir directive is set.
-
-The solution is a small fix in EasyBitcoin-PHP. Around line 135, change...
-
-`CURLOPT_FOLLOWLOCATION => TRUE,`
-
-to
-
-` CURLOPT_FOLLOWLOCATION => FALSE,`
+`tally.php` generates a "rich list". Usage: configure user/pass/host/port in the beginning of the file, and then run from command line: `php tally.php <output>`. Accurate results require the block chain being built with full transaction indexing. Avoid storing `tally.php` in your web directory where users may run it remotely, as it can be very time- and CPU-consuming when parsing long block chains.
 
 
 Donations
