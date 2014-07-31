@@ -1,7 +1,7 @@
 <?php
 $timeThen = microtime( true );
 
-$rpcAceVersion = '0.6.5';
+$rpcAceVersion = '0.6.6';
 
 $coinName = 'Somecoin';
 $coinHome = 'http://www.somecoin.org/';
@@ -20,7 +20,7 @@ require_once( 'easybitcoin.php' );
 
     RPC Ace v<?= $rpcAceVersion ?> (RPC AnyCoin Explorer)
 
-    by Robin Leffmann <djinn at stolendata dot net>
+    (c) 2014 Robin Leffmann <djinn at stolendata dot net>
 
     https://github.com/stolendata/rpc-ace/
 
@@ -37,17 +37,19 @@ require_once( 'easybitcoin.php' );
 <style type="text/css">
 @font-face { font-family: ABeeZee;
              src: url( 'http://themes.googleusercontent.com/static/fonts/abeezee/v2/zhbx7NQl8ktGP8FS60Z_oQLUuEpTyoUstqEm5AMlJo4.woff' ) format( 'woff' ); }
-html { background-color: #16429a;
-       color: #e6e6e6;
+html { background-color: #e0e0e0;
+       color: #303030;
        font-family: ABeeZee, sans-serif;
-       font-size: 15px;
+       font-size: 17px;
        white-space: pre; }
-a { color: #f0f0f0; }
-div.mid { width: 840px;
+a { color: #303030; }
+div.mid { width: 900px;
           margin: 3% auto; }
 td { width: 16%; }
 td.urgh { width: 100%; }
-tr.illu:hover { background-color: #2c58b0; }
+td.key { text-align: right; }
+td.value { padding-left: 16px; width: 100%; }
+tr.illu:hover { background-color: #c8c8c8; }
 </style>
 </head>
 <body><div class="mid"><table>
@@ -78,26 +80,29 @@ if( preg_match("/^([[:xdigit:]]{64})$/", $query) === 1 ) // block hash?
     if( ($block = $rpc->getblock($query)) === false )
         echo 'No matching block hash.<br />';
     else
+    {
+        echo '<table>';
         foreach( $block as $id => $val )
             if( $id === 'tx' )
                 foreach( $val as $txid ) // list of txids
                 {
-                    echo "$id: $txid<br />";
+                    echo "<tr><td class=\"key\">$id</td><td class=\"value\">$txid</td></tr>";
                     if( ($tx = $rpc->getrawtransaction($txid, 1)) === false )
                         continue;
                     foreach( $tx['vout'] as $entry )
                         if( $entry['value'] > 0.0 )
                             // nasty number formatting trick that hurts my soul, but it had to be done...
-                            echo '     ' . rtrim( rtrim(sprintf('%.8f', $entry['value']), '0'), '.' ) . " -> {$entry['scriptPubKey']['addresses'][0]}<br />";
+                            echo '<tr><td /><td class="value">     ' . rtrim( rtrim(sprintf('%.8f', $entry['value']), '0'), '.' ) . " -> {$entry['scriptPubKey']['addresses'][0]}</td></tr>";
                 }
             else // block fields
             {
                 if( $id === 'previousblockhash' || $id === 'nextblockhash' )
-                    echo "$id: <a href=\"?$val\">$val</a><br />";
-                else
-                    if( in_array($id, $blockFields) === true )
-                        echo "$id: $val<br />";
+                    echo "<tr><td class=\"key\">$id</td><td class=\"value\"><a href=\"?$val\">$val</a></td></tr>";
+                elseif( in_array($id, $blockFields) === true )
+                    echo "<tr><td class=\"key\">$id</td><td class=\"value\">$val</td></tr>";
             }
+        echo '</table>';
+    }
 }
 else // list of blocks
 {
@@ -135,11 +140,11 @@ else // list of blocks
     $older = $i != -1 ? '<a href="?' . ( $offset - $numBlocksPerPage ) . '">Older &gt;</a>' : 'Older &gt;';
     $i++;
 
-    echo "<tr><td colspan=\"5\" class=\"urgh\"> </td></tr><tr><td colspan=\"6\">$newer          $older</td></tr>";
+    echo "<tr><td colspan=\"5\" class=\"urgh\"> </td></tr><tr><td colspan=\"6\">$newer          $older</td></tr></table>";
 }
 
 $rpc = null;
 ?>
-</table></div></body>
+</div></body>
 </html>
 <!-- <?php printf( '%.4fs', microtime(true) - $timeThen ); ?> -->

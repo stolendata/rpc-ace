@@ -7,7 +7,7 @@ RPC Ace is a simple alternative block explorer written in PHP. It does not gener
 
 A database-less explorer has a few drawbacks - most notably, RPC Ace cannot keep track of addresses or total coins generated, and as it uses RPC calls to parse blocks a transaction-heavy block chain (such as Bitcoin) can incur heavy CPU usage and/or long page generation times. RPC Ace's primary use is quick access to oversight of a block chain; for in-depth needs it's recommended to run a tallying explorer such as Abe.
 
-RPC Ace has been tested to work with Bitcoin, Litecoin, Dogecoin, Solcoin and a few other block chains, but as it's still at an early stage it may contain bugs. Version 0.6.5 introduced experimental PoS support, which has so far only been tested to work with CryptCoin.
+RPC Ace should work with any block chain regardless of what proof-of-work algorithm is used, and has been tested to work with Bitcoin, Litecoin, Dogecoin, Solcoin and a few other block chains, but as it's still at an early stage it may contain bugs. Version 0.6.5 introduced PoS support, which has been tested against a number of popular PoS block chains.
 
 
 Setting up RPC Ace
