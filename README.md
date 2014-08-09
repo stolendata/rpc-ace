@@ -13,7 +13,7 @@ RPC Ace should work with any block chain regardless of what proof-of-work algori
 Setting up RPC Ace
 ------------------
 
-RPC Ace requires PHP version 5.4 or later, with CURL and JSON support enabled.
+RPC Ace (and the extras) requires PHP version 5.4 or later, with CURL and JSON support enabled.
 
 Place `rpcace.php` and `easybitcoin.php` ([get it here](https://github.com/aceat64/EasyBitcoin-PHP)) together in your web directory. The first few lines of `rpcace.php` contain all of its configurable parameters:
 
@@ -34,6 +34,7 @@ Extras
 
 `tally.php` generates a "rich list". Usage: configure user/pass/host/port in the beginning of the file, and then run from command line: `php tally.php <output>`. Accurate results require the block chain being built with full transaction indexing. Avoid storing `tally.php` in your web directory where users may run it remotely, as it can be very time- and CPU-consuming when parsing long block chains.
 
+When finished parsing blocks, `tally.php` will output its progress to a file named `RPCUSER-RPCPORT-tally.dat` which will be used to resume operations next time `tally.php` is started in order to avoid having to start over from block 1 when generating a new list. It's also possible to abort and have your progress saved for later by pressing `CTRL+C`.
 
 Donations
 ---------

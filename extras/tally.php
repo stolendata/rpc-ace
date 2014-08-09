@@ -9,25 +9,50 @@
     Licensed under CC BY-NC-SA 4.0 - http://creativecommons.org/licenses/by-nc-sa/4.0/
 */
 
-if( !isset($argv[1]) )
-    die( "usage: php {$argv[0]} <output filename>\n" );
-
-$numAddresses = 100;
-$txBufferSize = 150;
-
 $rpcUser = 'user';
 $rpcPass = 'pass';
 $rpcHost = '127.0.0.1';
 $rpcPort = 12345;
 
+$abort = false;
+$numAddresses = 100;
+$txBufferSize = 150;
+$resume = "$rpcUser-$rpcPort-tally.dat";
+
+if( !isset($argv[1]) )
+    die( "Usage: php {$argv[0]} <output filename>\n" );
+
+declare( ticks = 1 );
+function handleInt()
+{
+    global $abort;
+    $abort = true;
+}
+pcntl_signal( SIGINT, 'handleInt' );
+
 require_once( 'easybitcoin.php' );
 $rpc = new Bitcoin( $rpcUser, $rpcPass, $rpcHost, $rpcPort );
+$numBlocks = $rpc->getinfo()['blocks'];
+if( $rpc->status !== 200 && $rpc->error !== '' )
+    die( "Failed to connect. Check your coin's .conf file and your RPC parameters.\n" );
 
 $i = $txTotal = 0;
-$next = $rpc->getblockhash( 1 );
-$numBlocks = $rpc->getinfo()['blocks'];
+if( file_exists($resume) )
+{
+    $tally = unserialize( file_get_contents($resume) );
+    if( $tally['tally'] === true )
+    {
+        $i = $tally['last'];
+        $txTotal = $tally['txTotal'];
+        $addresses = $tally['addresses'];
+        $numAddresses = $tally['numAddresses'];
+        echo 'resuming from block ' . ( $i + 1 ) . ' - ';
+    }
+}
+
+$next = $rpc->getblockhash( $i + 1 );
 echo "$numBlocks blocks ... ";
-while( ++$i <= $numBlocks )
+while( ++$i <= $numBlocks && $abort === false )
 {
     if( $i % 1000 == 0 )
         echo "$i (tx# $txTotal)   ";
@@ -57,9 +82,17 @@ while( ++$i <= $numBlocks )
         if( count($txBuffer) > $txBufferSize )
             array_shift( $txBuffer );
     }
-    $next = $block['nextblockhash'];    
+    if( ($next = @$block['nextblockhash']) === null )
+        $abort = true;
 }
 $rpc = null;
+
+// save progress
+file_put_contents( $resume, serialize(['tally'=>true,
+                                       'numAddresses'=>$numAddresses,
+                                       'addresses'=>$addresses,
+                                       'txTotal'=>$txTotal,
+                                       'last'=>$i-1]) );
 
 natsort( $addresses );
 $addresses = array_reverse( $addresses );
@@ -68,6 +101,6 @@ $i = 0;
 while( (list($key, $value) = each( $addresses )) && $i++ < $numAddresses )
     file_put_contents( $argv[1], "$key $value\n", FILE_APPEND );
 
-echo "done! $txTotal transactions through " . count( $addresses ) . " unique addresses counted\n";
+echo ( $abort ? 'aborted -' : 'done!' ) . " $txTotal transactions through " . count( $addresses ) . " unique addresses counted\n";
 
 ?>
