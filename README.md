@@ -19,7 +19,7 @@ Place `rpcace.php` and `easybitcoin.php` ([get it here](https://github.com/aceat
 
     $coinName = 'Somecoin';                  // Coin name/title for the explorer
     $coinHome = 'http://www.somecoin.org/';  // Coin website
-    $coinPoS = false;                        // Experimental; only tested on CryptCoin so far
+    $coinPoS = false;                        // Set to true for proof-of-stake coins
     $rpcHost = '127.0.0.1';                  // Host/IP for the daemon
     $rpcPort = 12345;                        // RPC port for the daemon
     $rpcUser = 'username';                   // 'rpcuser' from somecoin.conf
@@ -40,11 +40,11 @@ When finished parsing blocks, `tally.php` will output its progress to a file nam
 Donations
 ---------
 
-BTC: 1EDhbo9ejdKUxNW3GPBh1UmocC1ea1TvE5
-LTC: LaDuRFwEt1V26pmJJH94auDvxqN3rRFqPj
-DOGE: DK2pB2XXQ9w13UZD2J9wsEHFVDvuE767wT
-VTC: VwDmyMR5udPkEwTJhxDsUB2C3mk8NKCSD8
-DRK: XvHfibq2f1xU6rYqAULVXHLPuRhBawzTZs
+BTC: 1EDhbo9ejdKUxNW3GPBh1UmocC1ea1TvE5  
+LTC: LaDuRFwEt1V26pmJJH94auDvxqN3rRFqPj  
+DOGE: DK2pB2XXQ9w13UZD2J9wsEHFVDvuE767wT  
+VTC: VwDmyMR5udPkEwTJhxDsUB2C3mk8NKCSD8  
+DRK: XvHfibq2f1xU6rYqAULVXHLPuRhBawzTZs  
 
 
 License
