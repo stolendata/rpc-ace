@@ -22,8 +22,8 @@ Place `rpcace.php` and `easybitcoin.php` ([get it here](https://github.com/aceat
     $coinPoS = false;                        // Set to true for proof-of-stake coins
     $rpcHost = '127.0.0.1';                  // Host/IP for the daemon
     $rpcPort = 12345;                        // RPC port for the daemon
-    $rpcUser = 'username';                   // 'rpcuser' from somecoin.conf
-    $rpcPass = 'password';                   // 'rpcpassword' from somecoin.conf
+    $rpcUser = 'username';                   // 'rpcuser' from the coin's .conf
+    $rpcPass = 'password';                   // 'rpcpassword' from the coin's .conf
     $numBlocksPerPage = 12;                  // Number of blocks to parse per page
 
 To get accurate transaction values your block chain must be built with full transaction indexing from the start, by setting `txindex=1` in somecoin.conf.
@@ -34,7 +34,7 @@ Extras
 
 `tally.php` generates a "rich list". Usage: configure user/pass/host/port in the beginning of the file, and then run from command line: `php tally.php <output>`. Accurate results require the block chain being built with full transaction indexing. Avoid storing `tally.php` in your web directory where users may run it remotely, as it can be very time- and CPU-consuming when parsing long block chains.
 
-When finished parsing blocks, `tally.php` will output its progress to a file named `RPCUSER-RPCPORT-tally.dat` which will be used to resume operations next time `tally.php` runs in order to avoid having to start over from block 1 when updating a list. Aborting the script by pressing `CTRL+C` while running will also save the progress file for later use.
+When finished parsing blocks, `tally.php` will output its progress to a file named `RPCUSER-RPCPORT-tally.dat` which will be used to resume operations next time `tally.php` runs in order to avoid having to start over from block 1 when updating a list. Aborting the script while running by pressing `CTRL+C` will also save the progress file for later use.
 
 
 Donations
