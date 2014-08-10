@@ -22,7 +22,6 @@ $resume = "$rpcUser-$rpcPort-tally.dat";
 if( !isset($argv[1]) )
     die( "Usage: php {$argv[0]} <output filename>\n" );
 
-declare( ticks = 1 );
 function handleInt()
 {
     global $abort;
@@ -84,6 +83,8 @@ while( ++$i <= $numBlocks && $abort === false )
     }
     if( ($next = @$block['nextblockhash']) === null )
         $abort = true;
+
+    pcntl_signal_dispatch();
 }
 $rpc = null;
 
