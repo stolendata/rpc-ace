@@ -34,14 +34,17 @@ Extras
 
 `tally.php` generates a "rich list". Usage: configure user/pass/host/port in the beginning of the file, and then run from command line: `php tally.php <output>`. Accurate results require the block chain being built with full transaction indexing. Avoid storing `tally.php` in your web directory where users may run it remotely, as it can be very time- and CPU-consuming when parsing long block chains.
 
-When finished parsing blocks, `tally.php` will output its progress to a file named `RPCUSER-RPCPORT-tally.dat` which will be used to resume operations next time `tally.php` is started in order to avoid having to start over from block 1 when generating a new list. It's also possible to abort and have your progress saved for later by pressing `CTRL+C`.
+When finished parsing blocks, `tally.php` will output its progress to a file named `RPCUSER-RPCPORT-tally.dat` which will be used to resume operations next time `tally.php` runs in order to avoid having to start over from block 1 when updating a list. Aborting the script by pressing `CTRL+C` while running will also save the progress file for later use.
+
 
 Donations
 ---------
 
-BTC: 1EDhbo9ejdKUxNW3GPBh1UmocC1ea1TvE5  
-LTC: LaDuRFwEt1V26pmJJH94auDvxqN3rRFqPj  
+BTC: 1EDhbo9ejdKUxNW3GPBh1UmocC1ea1TvE5
+LTC: LaDuRFwEt1V26pmJJH94auDvxqN3rRFqPj
 DOGE: DK2pB2XXQ9w13UZD2J9wsEHFVDvuE767wT
+VTC: VwDmyMR5udPkEwTJhxDsUB2C3mk8NKCSD8
+DRK: XvHfibq2f1xU6rYqAULVXHLPuRhBawzTZs
 
 
 License
