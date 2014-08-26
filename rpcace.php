@@ -1,24 +1,26 @@
 <?php
 $timeThen = microtime( true );
 
-$rpcAceVersion = '0.6.6';
+$aceVersion = '0.6.7';
 
-$coinName = 'Somecoin';
-$coinHome = 'http://www.somecoin.org/';
-$coinPoS = false;    // PoS support is experimental
 $rpcHost = '127.0.0.1';
 $rpcPort = 12345;
 $rpcUser = 'username';
 $rpcPass = 'password';
+$coinName = 'Somecoin';
+$coinHome = 'http://www.somecoin.org/';
+$coinPoS = false;
 $numBlocksPerPage = 12;
+$refreshTime = 180;
 
 $blockFields = [ 'hash', 'confirmations', 'size', 'height', 'version', 'merkleroot', 'time', 'nonce', 'bits', 'difficulty', 'mint', 'proofhash' ];
 
 require_once( 'easybitcoin.php' );
+$query = $_SERVER['QUERY_STRING'];
 ?>
 <!--
 
-    RPC Ace v<?= $rpcAceVersion ?> (RPC AnyCoin Explorer)
+    RPC Ace v<?= $aceVersion ?> (RPC AnyCoin Explorer)
 
     (c) 2014 Robin Leffmann <djinn at stolendata dot net>
 
@@ -31,20 +33,21 @@ require_once( 'easybitcoin.php' );
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<?php if( empty($query) ) echo "<meta http-equiv=\"refresh\" content=\"$refreshTime; " . basename( __FILE__ ) . "\" />\n"; ?>
 <meta name="author" content="Robin Leffmann (djinn at stolendata dot net)" />
-<meta name="robots" content="noindex,nofollow,nocache" />
-<title><?= $coinName ?> block explorer &middot; RPC Ace v<?= $rpcAceVersion ?></title>
+<meta name="robots" content="nofollow,nocache" />
+<title><?= "$coinName block explorer &middot; RPC Ace v$aceVersion" ?></title>
 <style type="text/css">
-@font-face { font-family: ABeeZee;
-             src: url( 'http://themes.googleusercontent.com/static/fonts/abeezee/v2/zhbx7NQl8ktGP8FS60Z_oQLUuEpTyoUstqEm5AMlJo4.woff' ) format( 'woff' ); }
+@font-face { font-family: Montserrat;
+             src: url( 'http://fonts.gstatic.com/s/montserrat/v5/zhcz-_WihjSQC0oHJ9TCYL3hpw3pgy2gAi-Ip7WPMi0.woff' ) format( 'woff' ); }
 html { background-color: #e0e0e0;
        color: #303030;
-       font-family: ABeeZee, sans-serif;
+       font-family: Montserrat, sans-serif;
        font-size: 17px;
        white-space: pre; }
 a { color: #303030; }
 div.mid { width: 900px;
-          margin: 3% auto; }
+          margin: 2% auto; }
 td { width: 16%; }
 td.urgh { width: 100%; }
 td.key { text-align: right; }
@@ -52,11 +55,13 @@ td.value { padding-left: 16px; width: 100%; }
 tr.illu:hover { background-color: #c8c8c8; }
 </style>
 </head>
-<body><div class="mid"><table>
+<body>
 <?php
-$query = $_SERVER['QUERY_STRING'];
 $rpc = new Bitcoin( $rpcUser, $rpcPass, $rpcHost, $rpcPort );
 $info = $rpc->getinfo();
+if( $rpc->status !== 200 && $rpc->error !== '' )
+    die( 'Failed to connect. Check your coin\'s .conf file and your RPC parameters.' );
+
 if( $coinPoS === true )
 {
     $diffNom = 'Difficulty &middot; PoS';
@@ -71,9 +76,9 @@ else
 }
 $hashRate = sprintf( '%.2f', $hashRate );
 
-echo "<tr><td class=\"urgh\"><b><a href=\"$coinHome\">$coinName</a></b> block explorer</td><td>Blocks:</td><td><a href=\"?{$info['blocks']}\">{$info['blocks']}</a></td></tr>";
+echo "<div class=\"mid\"><table><tr><td class=\"urgh\"><b><a href=\"$coinHome\">$coinName</a></b> block explorer</td><td>Blocks:</td><td><a href=\"?{$info['blocks']}\">{$info['blocks']}</a></td></tr>";
 echo "<tr><td /><td>$diffNom:</td><td>$diff</td></tr>";
-echo "<tr><td>Powered by <a href=\"https://github.com/stolendata/rpc-ace/\">RPC Ace</a> v$rpcAceVersion (RPC AnyCoin Explorer)</td><td>Network hashrate: </td><td>$hashRate MH/s</td></tr><tr><td> </td><td /><td /></tr></table>";
+echo "<tr><td>Powered by <a href=\"https://github.com/stolendata/rpc-ace/\">RPC Ace</a> v$aceVersion (RPC AnyCoin Explorer)</td><td>Network hashrate: </td><td>$hashRate MH/s</td></tr><tr><td> </td><td /><td /></tr></table>";
 
 if( preg_match("/^([[:xdigit:]]{64})$/", $query) === 1 ) // block hash?
 {

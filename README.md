@@ -17,16 +17,18 @@ RPC Ace (and the extras) requires PHP version 5.4 or later, with CURL and JSON s
 
 Place `rpcace.php` and `easybitcoin.php` ([get it here](https://github.com/aceat64/EasyBitcoin-PHP)) together in your web directory. The first few lines of `rpcace.php` contain all of its configurable parameters:
 
-    $coinName = 'Somecoin';                  // Coin name/title for the explorer
-    $coinHome = 'http://www.somecoin.org/';  // Coin website
-    $coinPoS = false;                        // Set to true for proof-of-stake coins
     $rpcHost = '127.0.0.1';                  // Host/IP for the daemon
     $rpcPort = 12345;                        // RPC port for the daemon
     $rpcUser = 'username';                   // 'rpcuser' from the coin's .conf
     $rpcPass = 'password';                   // 'rpcpassword' from the coin's .conf
+    $coinName = 'Somecoin';                  // Coin name/title for the explorer
+    $coinHome = 'http://www.somecoin.org/';  // Coin website
+    $coinPoS = false;                        // Set to true for proof-of-stake coins
     $numBlocksPerPage = 12;                  // Number of blocks to parse per page
+    $refreshTime = 180;                      // Seconds between automatic page refresh
 
-To get accurate transaction values your block chain must be built with full transaction indexing from the start, by setting `txindex=1` in somecoin.conf.
+
+To get accurate transaction values your block chain must be built with full transaction indexing from the start, by setting `txindex=1` in the coin's .conf file.
 
 
 Extras
