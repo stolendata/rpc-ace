@@ -33,7 +33,7 @@ $query = $_SERVER['QUERY_STRING'];
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<?php if( empty($query) ) echo "<meta http-equiv=\"refresh\" content=\"$refreshTime; " . basename( __FILE__ ) . "\" />\n"; ?>
+<?php if( empty($query) || ctype_digit($query) ) echo "<meta http-equiv=\"refresh\" content=\"$refreshTime; " . basename( __FILE__ ) . "\" />\n"; ?>
 <meta name="author" content="Robin Leffmann (djinn at stolendata dot net)" />
 <meta name="robots" content="nofollow,nocache" />
 <title><?= "$coinName block explorer &middot; RPC Ace v$aceVersion" ?></title>
