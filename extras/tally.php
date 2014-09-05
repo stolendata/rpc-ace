@@ -51,7 +51,7 @@ if( file_exists($resume) )
         else
         {
             $rpc = null;
-            die( 'no new blocks, list is up to date' );
+            die( "no new blocks, list is up to date\n" );
         }
 }
 
