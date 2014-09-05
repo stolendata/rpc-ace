@@ -40,13 +40,19 @@ if( file_exists($resume) )
 {
     $tally = unserialize( file_get_contents($resume) );
     if( $tally['tally'] === true )
-    {
-        $i = $tally['last'];
-        $txTotal = $tally['txTotal'];
-        $addresses = $tally['addresses'];
-        $numAddresses = $tally['numAddresses'];
-        echo 'resuming from block ' . ( $i + 1 ) . ' - ';
-    }
+        if( $numBlocks < $tally['last'] )
+        {
+            $i = $tally['last'];
+            $txTotal = $tally['txTotal'];
+            $addresses = $tally['addresses'];
+            $numAddresses = $tally['numAddresses'];
+            echo "resuming from block $i - ";
+        }
+        else
+        {
+            $rpc = null;
+            die( 'no new blocks, list is up to date' );
+        }
 }
 
 $next = $rpc->getblockhash( $i + 1 );
@@ -99,9 +105,9 @@ natsort( $addresses );
 $addresses = array_reverse( $addresses );
 
 $i = 0;
-while( (list($key, $value) = each( $addresses )) && $i++ < $numAddresses )
-    file_put_contents( $argv[1], "$key $value\n", FILE_APPEND );
+while( (list($key, $value) = each($addresses)) && $i++ < $numAddresses )
+    @$output .= "$key $value\n";
+file_put_contents( $argv[1], $output );
 
 echo ( $abort ? 'aborted -' : 'done!' ) . " $txTotal transactions through " . count( $addresses ) . " unique addresses counted\n";
-
 ?>
