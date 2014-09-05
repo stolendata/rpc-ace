@@ -40,7 +40,7 @@ if( file_exists($resume) )
 {
     $tally = unserialize( file_get_contents($resume) );
     if( $tally['tally'] === true )
-        if( $numBlocks < $tally['last'] )
+        if( $numBlocks > $tally['last'] )
         {
             $i = $tally['last'];
             $txTotal = $tally['txTotal'];
