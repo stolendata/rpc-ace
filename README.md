@@ -9,32 +9,39 @@ A database-less explorer has a few drawbacks - most notably, RPC Ace cannot keep
 
 RPC Ace should work with any block chain regardless of what proof-of-work algorithm is used, and has been tested to work with Bitcoin, Litecoin, Dogecoin, Solcoin and a few other block chains, but as it's still at an early stage it may contain bugs. Version 0.6.5 introduced PoS support, which has been tested against a number of popular PoS block chains.
 
+Version 0.7.0 introduced optional JSON output through a rewrite of the codebase which split the project into an example block explorer and a class, `RPCAce`, with two functions, `getBlock` and `getBlockList`, for returning a PHP array or JSON of a block's details and a summarized list of blocks respectively. This change allows for removing the example block explorer of RPC Ace in order to use the RPCAce class on its own for processing and presenting block chain data in other ways.
 
 Setting up RPC Ace
 ------------------
 
 RPC Ace (and the extras) requires PHP version 5.4 or later, with CURL and JSON support enabled.
 
-Place `rpcace.php` and `easybitcoin.php` ([get it here](https://github.com/aceat64/EasyBitcoin-PHP)) together in your web directory. The first few lines of `rpcace.php` contain all of its configurable parameters:
+Place `rpcace.php` and `easybitcoin.php` ([get it here](https://github.com/aceat64/EasyBitcoin-PHP)) together in your web directory. The first few lines of `rpcace.php` defines its configurable parameters:
 
-    $rpcHost = '127.0.0.1';                  // Host/IP for the daemon
-    $rpcPort = 12345;                        // RPC port for the daemon
-    $rpcUser = 'username';                   // 'rpcuser' from the coin's .conf
-    $rpcPass = 'password';                   // 'rpcpassword' from the coin's .conf
-    $coinName = 'Somecoin';                  // Coin name/title for the explorer
-    $coinHome = 'http://www.somecoin.org/';  // Coin website
-    $coinPoS = false;                        // Set to true for proof-of-stake coins
-    $numBlocksPerPage = 12;                  // Number of blocks to parse per page
-    $refreshTime = 180;                      // Seconds between automatic page refresh
+    COINNAME, 'Somecoin'                  // Coin name/title
+    COINHOME, 'http://www.somecoin.org/'  // Coin website
+    COINPOS, false                        // Set to true for proof-of-stake coins
+    
+    RETURNJSON, false                     // Set to true to return JSON instead of HTML
+    DATEFORMAT, 'H:i:s Y-M-d'             // Date format for block list
+    BLOCKSPERLIST, 12                     // Number of blocks for block list
+    REFRESHTIME, 180                      // Seconds between automatic HTML page refresh
+    
+    Further down, inside the RPCAce class:
+    
+    $rpcHost = '127.0.0.1'                // Host/IP for the daemon
+    $rpcPort = 12345                      // RPC port for the daemon
+    $rpcUser = 'username'                 // 'rpcuser' from the coin's .conf
+    $rpcPass = 'password'                 // 'rpcpassword' from the coin's .conf
 
 
-To get accurate transaction values your block chain must be built with full transaction indexing from the start, by setting `txindex=1` in the coin's .conf file.
+To get accurate transaction values your block chain must be reindexed (or built from scratch) with full transaction indexing, by setting `txindex=1` in the coin's .conf file.
 
 
 Extras
 ------
 
-`tally.php` generates a "rich list". Usage: configure user/pass/host/port in the beginning of the file, and then run from command line: `php tally.php <output>`. Accurate results require the block chain being built with full transaction indexing. Avoid storing `tally.php` in your web directory where users may run it remotely, as it can be very time- and CPU-consuming when parsing long block chains.
+`tally.php` generates a "richlist". Usage: configure user/pass/host/port in the beginning of the file, and then run from command line: `php tally.php <output>`. Accurate results require the block chain being built with full transaction indexing. Avoid storing `tally.php` in your web directory where users may run it remotely, as it can be very time- and CPU-consuming when parsing long block chains.
 
 When finished parsing blocks, `tally.php` will output its progress to a file named `RPCUSER-RPCPORT-tally.dat` which will be used to resume operations next time `tally.php` runs in order to avoid having to start over from block 1 when updating a list. Aborting the script while running by pressing `CTRL+C` will also save the progress file for later use.
 
@@ -44,7 +51,7 @@ Donations
 
 BTC: 1EDhbo9ejdKUxNW3GPBh1UmocC1ea1TvE5  
 LTC: LaDuRFwEt1V26pmJJH94auDvxqN3rRFqPj  
-DOGE: DK2pB2XXQ9w13UZD2J9wsEHFVDvuE767wT  
+DOGE: DQKXUqsPSWtTR88HAeQv2kos88BnW2boxP  
 VTC: VwDmyMR5udPkEwTJhxDsUB2C3mk8NKCSD8  
 DRK: XvHfibq2f1xU6rYqAULVXHLPuRhBawzTZs  
 
