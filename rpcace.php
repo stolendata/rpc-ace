@@ -161,6 +161,7 @@ else
 {
     $query = ( $query === false || !is_numeric($query) ) ? null : abs( (int)$query );
     $ace = RPCAce::getBlockList( $query, BLOCKSPERLIST );
+    $query = $query === null ? $ace['num_blocks'] : $query;
 }
 
 if( isset($ace['err']) || RETURNJSON === true )
