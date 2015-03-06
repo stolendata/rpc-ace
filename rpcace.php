@@ -32,7 +32,7 @@ class RPCAce
 
     private static $blockFields = [ 'hash', 'nextblockhash', 'previousblockhash', 'confirmations', 'size', 'height', 'version', 'merkleroot', 'time', 'nonce', 'bits', 'difficulty', 'mint', 'proofhash' ];
 
-    private function base()
+    private static function base()
     {
         $rpc = new Bitcoin( self::$rpcUser, self::$rpcPass, self::$rpcHost, self::$rpcPort );
         $info = $rpc->getinfo();
@@ -60,7 +60,7 @@ class RPCAce
     }
 
     // enumerate block details from hash
-    function getBlock( $hash )
+    public static function getBlock( $hash )
     {
         if( preg_match('/^([[:xdigit:]]{64})$/', $hash) !== 1 )
             return RETURNJSON ? json_encode( ['err'=>'not a valid block hash'] ) : [ 'err'=>'not a valid block hash' ];
@@ -103,7 +103,7 @@ class RPCAce
     }
 
     // create summarized list from block number
-    function getBlockList( $ofs, $n = BLOCKSPERLIST )
+    public static function getBlockList( $ofs, $n = BLOCKSPERLIST )
     {
         $base = self::base();
         if( isset($base['err']) )
