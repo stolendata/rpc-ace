@@ -1,6 +1,6 @@
 <?php
 /*
-    RPC Ace v0.7.0 (RPC AnyCoin Explorer)
+    RPC Ace v0.7.1 (RPC AnyCoin Explorer)
 
     (c) 2014 Robin Leffmann <djinn at stolendata dot net>
 
@@ -9,7 +9,7 @@
     licensed under CC BY-NC-SA 4.0 - http://creativecommons.org/licenses/by-nc-sa/4.0/
 */
 
-define( 'ACEVERSION', '0.7.0' );
+define( 'ACEVERSION', '0.7.1' );
 
 define( 'COINNAME', 'Somecoin' );
 define( 'COINHOME', 'http://www.somecoin.org/' );
@@ -37,7 +37,7 @@ class RPCAce
         $rpc = new Bitcoin( self::$rpcUser, self::$rpcPass, self::$rpcHost, self::$rpcPort );
         $info = $rpc->getinfo();
         if( $rpc->status !== 200 && $rpc->error !== '' )
-            return [ 'err'=>'failed to connect' ];
+            return [ 'err'=>'failed to connect - verify ' ];
 
         $output['rpcace_version'] = ACEVERSION;
         $output['coin_name'] = COINNAME;
@@ -70,7 +70,7 @@ class RPCAce
             return RETURNJSON ? json_encode( $base ) : $base;
 
         if( ($block = $base['rpc']->getblock($hash)) === false )
-            return RETURNJSON ? json_encode( ['err'=>'no matching block'] ) : [ 'err'=>'no matching block' ];
+            return RETURNJSON ? json_encode( ['err'=>'no block with that hash'] ) : [ 'err'=>'no block with that hash' ];
 
         $total = 0;
         foreach( $block as $id => $val )
@@ -111,7 +111,7 @@ class RPCAce
 
         $offset = $ofs === null ? $base['output']['num_blocks'] : abs( (int)$ofs );
         if( $offset > $base['output']['num_blocks'] )
-            return RETURNJSON ? json_encode( ['err'=>'no matching block'] ) : [ 'err'=>'no matching block' ];
+            return RETURNJSON ? json_encode( ['err'=>'block does not exist'] ) : [ 'err'=>'block does not exist' ];
 
         $i = $offset;
         while( $i >= 0 && $n-- )
@@ -161,16 +161,16 @@ else
 {
     $query = ( $query === false || !is_numeric($query) ) ? null : abs( (int)$query );
     $ace = RPCAce::getBlockList( $query, BLOCKSPERLIST );
-    $query = $query === null ? $ace['num_blocks'] : $query;
+    $query = $query === null ? @$ace['num_blocks'] : $query;
 }
 
 if( isset($ace['err']) || RETURNJSON === true )
-    die( RETURNJSON ? $ace : $ace['err'] );
+    die( 'RPC Ace error: ' . (RETURNJSON ? $ace : $ace['err']) );
 
 echo <<<END
 <!DOCTYPE html>
 <!--
-    RPC Ace v0.7.0 (RPC AnyCoin Explorer)
+    RPC Ace v0.7.1 (RPC AnyCoin Explorer)
 
     (c) 2014 Robin Leffmann <djinn at stolendata dot net>
 
