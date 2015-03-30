@@ -29,10 +29,10 @@ Place `rpcace.php` and `easybitcoin.php` ([get it here](https://github.com/aceat
     
     Further down, inside the RPCAce class:
     
-    $rpcHost = '127.0.0.1'                // Host/IP for the daemon
-    $rpcPort = 12345                      // RPC port for the daemon
-    $rpcUser = 'username'                 // 'rpcuser' from the coin's .conf
-    $rpcPass = 'password'                 // 'rpcpassword' from the coin's .conf
+    $rpcHost = '127.0.0.1';               // Host/IP for the daemon
+    $rpcPort = 12345;                     // RPC port for the daemon
+    $rpcUser = 'username';                // 'rpcuser' from the coin's .conf
+    $rpcPass = 'password';                // 'rpcpassword' from the coin's .conf
 
 
 To get accurate transaction values your block chain must be reindexed (or built from scratch) with full transaction indexing, by setting `txindex=1` in the coin's .conf file.
