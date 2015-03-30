@@ -37,7 +37,7 @@ class RPCAce
         $rpc = new Bitcoin( self::$rpcUser, self::$rpcPass, self::$rpcHost, self::$rpcPort );
         $info = $rpc->getinfo();
         if( $rpc->status !== 200 && $rpc->error !== '' )
-            return [ 'err'=>'failed to connect - verify ' ];
+            return [ 'err'=>'failed to connect - node not reachable, or user/pass incorrect' ];
 
         $output['rpcace_version'] = ACEVERSION;
         $output['coin_name'] = COINNAME;
