@@ -18,21 +18,20 @@ RPC Ace (and the extras) requires PHP version 5.4 or later, with CURL and JSON s
 
 Place `rpcace.php` and `easybitcoin.php` ([get it here](https://github.com/aceat64/EasyBitcoin-PHP)) together in your web directory. The first few lines of `rpcace.php` defines its configurable parameters:
 
+    RPCHOST, '127.0.0.1'                  // Host/IP for the daemon
+    RPCPORT, 12345                        // RPC port for the daemon
+    RPCUSER, 'username'                   // 'rpcuser' from the coin's .conf
+    RPCPASS, 'password'                   // 'rpcpassword' from the coin's .conf
+
     COINNAME, 'Somecoin'                  // Coin name/title
-    COINHOME, 'http://www.somecoin.org/'  // Coin website
     COINPOS, false                        // Set to true for proof-of-stake coins
-    
-    RETURNJSON, false                     // Set to true to return JSON instead of HTML
+
+    RETURNJSON, false                     // Set to true to return JSON instead of PHP arrays
     DATEFORMAT, 'H:i:s Y-M-d'             // Date format for block list
-    BLOCKSPERLIST, 12                     // Number of blocks for block list
+    BLOCKSPERLIST, 12                     // Number of blocks to collect for the block list
+
+    COINHOME, 'http://www.somecoin.org/'  // Coin website
     REFRESHTIME, 180                      // Seconds between automatic HTML page refresh
-    
-    Further down, inside the RPCAce class:
-    
-    $rpcHost = '127.0.0.1';               // Host/IP for the daemon
-    $rpcPort = 12345;                     // RPC port for the daemon
-    $rpcUser = 'username';                // 'rpcuser' from the coin's .conf
-    $rpcPass = 'password';                // 'rpcpassword' from the coin's .conf
 
 
 To get accurate transaction values your block chain must be reindexed (or built from scratch) with full transaction indexing, by setting `txindex=1` in the coin's .conf file.

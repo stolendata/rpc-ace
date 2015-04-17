@@ -11,13 +11,20 @@
 
 define( 'ACEVERSION', '0.7.1' );
 
+define( 'RPCHOST', '127.0.0.1' );
+define( 'RPCPORT', 12345 );
+define( 'RPCUSER', 'username' );
+define( 'RPCPASS', 'password' );
+
 define( 'COINNAME', 'Somecoin' );
-define( 'COINHOME', 'http://www.somecoin.org/' );
 define( 'COINPOS', false );
 
 define( 'RETURNJSON', false );
 define( 'DATEFORMAT', 'H:i:s Y-M-d' );
 define( 'BLOCKSPERLIST', 12 );
+
+// for the example explorer
+define( 'COINHOME', 'http://www.somecoin.org/' );
 define( 'REFRESHTIME', 180 );
 
 // courtesy of https://github.com/aceat64/EasyBitcoin-PHP/
@@ -25,16 +32,11 @@ require_once( 'easybitcoin.php' );
 
 class RPCAce
 {
-    private static $rpcHost = '127.0.0.1';
-    private static $rpcPort = 12345;
-    private static $rpcUser = 'username';
-    private static $rpcPass = 'password';
-
     private static $blockFields = [ 'hash', 'nextblockhash', 'previousblockhash', 'confirmations', 'size', 'height', 'version', 'merkleroot', 'time', 'nonce', 'bits', 'difficulty', 'mint', 'proofhash' ];
 
     private static function base()
     {
-        $rpc = new Bitcoin( self::$rpcUser, self::$rpcPass, self::$rpcHost, self::$rpcPort );
+        $rpc = new Bitcoin( RPCUSER, RPCPASS, RPCHOST, RPCPORT );
         $info = $rpc->getinfo();
         if( $rpc->status !== 200 && $rpc->error !== '' )
             return [ 'err'=>'failed to connect - node not reachable, or user/pass incorrect' ];
