@@ -147,6 +147,8 @@ class RPCAce
                     if( ($tx = self::tx($base, $txid)) === false )
                         continue;
 
+                    $transaction['raw_content'] = $tx;
+
                     if( isset($tx['vin'][0]['coinbase']) )
                         $transaction['coinbase'] = true;
 
@@ -160,7 +162,7 @@ class RPCAce
                     $base['output']['transactions'][] = $transaction;
                     $transaction = null;
                 }
-            elseif( in_array($id, self::$block_fields) )
+            else
                 $base['output']['fields'][$id] = $val;
 
         $base['output']['total_out'] = $total;
@@ -250,6 +252,8 @@ echo <<<END
 <meta name="author" content="Robin Leffmann (djinn at stolendata dot net)"/>
 
 END;
+
+echo '<pre>'; print_r( $ace ); echo '</pre>';
 
 if( empty($query) || ctype_digit($query) )
     echo '<meta http-equiv="refresh" content="' . REFRESH_TIME . '; url=' . basename( __FILE__ ) . "\"/>\n";
