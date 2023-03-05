@@ -2,11 +2,11 @@
 /*
     RPC Ace v0.8.0 (RPC AnyCoin Explorer)
 
-    (c) 2014 - 2015 Robin Leffmann <djinn at stolendata dot net>
+    (c) 2014 - 2017 Robin Leffmann <djinn at stolendata dot net>
 
     https://github.com/stolendata/rpc-ace/
 
-    licensed under CC BY-NC-SA 4.0 - http://creativecommons.org/licenses/by-nc-sa/4.0/
+    licensed under CC BY-NC-SA 4.0 - https://creativecommons.org/licenses/by-nc-sa/4.0/
 */
 
 const ACE_VERSION = '0.8.0';
@@ -26,7 +26,7 @@ const BLOCKS_PER_LIST = 12;
 const DB_FILE = 'db/somecoin_db.sq3';
 
 // for the example explorer
-const COIN_HOME = 'https://www.coin.org/';
+const COIN_HOME = 'https://www.somecoin.org/';
 const REFRESH_TIME = 180;
 
 // courtesy of https://github.com/aceat64/EasyBitcoin-PHP/
@@ -46,11 +46,11 @@ class RPCAce
         if( DB_FILE )
         {
             $pdo = new PDO( 'sqlite:' . DB_FILE );
-            $pdo->exec( 'create table if not exists block ( height int, hash char(64), json blob );
-                         create table if not exists tx ( txid char(64), json blob );
-                         create unique index if not exists ub on block ( height );
-                         create unique index if not exists uh on block ( hash );
-                         create unique index if not exists ut on tx ( txid );' );
+            $pdo->exec( 'CREATE TABLE IF NOT EXISTS block ( height INT, hash CHAR(64), json BLOB );
+                         CREATE TABLE IF NOT EXISTS tx ( txid CHAR(64), json BLOB );
+                         CREATE UNIQUE INDEX IF NOT EXISTS ub ON block ( height );
+                         CREATE UNIQUE INDEX IF NOT EXISTS uh ON block ( hash );
+                         CREATE UNIQUE INDEX IF NOT EXISTS ut ON tx ( txid );' );
         }
 
         $output['rpcace_version'] = ACE_VERSION;
@@ -73,16 +73,18 @@ class RPCAce
         return [ 'output'=>$output, 'rpc'=>$rpc, 'pdo'=>@$pdo ];
     }
 
+    // pull block from db (or over rpc as fallback)
     private static function block( $base, $b )
     {
         if( DB_FILE )
         {
-            $sth = $base['pdo']->prepare( 'select json from block where height = ? or hash = ?;' );
+            $sth = $base['pdo']->prepare( 'SELECT json FROM block WHERE height = ? OR hash = ?;' );
             $sth->execute( [$b, $b] );
             $block = $sth->fetchColumn();
             if( $block )
                 $block = json_decode( gzinflate($block), true );
         }
+
         if( @$block == false )
         {
             if( strlen($b) < 64 )
@@ -92,33 +94,35 @@ class RPCAce
 
         if( DB_FILE && @$block )
         {
-            $sth = $base['pdo']->prepare( 'insert into block values (?, ?, ?);' );
+            $sth = $base['pdo']->prepare( 'INSERT INTO block VALUES (?, ?, ?);' );
             $sth->execute( [$block['height'], $block['hash'], gzdeflate(json_encode($block))] );
         }
 
-        return $block ? $block : false;
+        return $block ?: false;
     }
 
-    private static function tx( $base, $txid )
+    // ditto for transaction
+    private static function tx( $base, $t )
     {
         if( DB_FILE )
         {
-            $sth = $base['pdo']->prepare( 'select json from tx where txid = ?;' );
-            $sth->execute( [$txid] );
+            $sth = $base['pdo']->prepare( 'SELECT json FROM tx WHERE txid = ?;' );
+            $sth->execute( [$t] );
             $tx = $sth->fetchColumn();
             if( $tx )
                 $tx = json_decode( gzinflate($tx), true );
         }
+
         if( @$tx == false )
-            $tx = $base['rpc']->getrawtransaction( $txid, 1 );
+            $tx = $base['rpc']->getrawtransaction( $t, 1 );
 
         if( DB_FILE && @$tx )
         {
-            $sth = $base['pdo']->prepare( 'insert into tx values (?, ?);' );
-            $sth->execute( [$txid, gzdeflate(json_encode($tx))] );
+            $sth = $base['pdo']->prepare( 'INSERT INTO tx VALUES (?, ?);' );
+            $sth->execute( [$t, gzdeflate(json_encode($tx))] );
         }
 
-        return $tx ? $tx : false;
+        return $tx ?: false;
     }
 
     // enumerate block details from hash
@@ -234,21 +238,21 @@ echo <<<END
 <!--
     RPC Ace v0.8.0 (RPC AnyCoin Explorer)
 
-    (c) 2014 - 2015 Robin Leffmann <djinn at stolendata dot net>
+    (c) 2014 - 2017 Robin Leffmann <djinn at stolendata dot net>
 
     https://github.com/stolendata/rpc-ace/
 
-    licensed under CC BY-NC-SA 4.0 - http://creativecommons.org/licenses/by-nc-sa/4.0/
+    licensed under CC BY-NC-SA 4.0 - https://creativecommons.org/licenses/by-nc-sa/4.0/
 -->
 <head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<meta name="robots" content="index,nofollow,nocache" />
-<meta name="author" content="Robin Leffmann (djinn at stolendata dot net)" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<meta name="robots" content="index,nofollow,nocache"/>
+<meta name="author" content="Robin Leffmann (djinn at stolendata dot net)"/>
 
 END;
 
 if( empty($query) || ctype_digit($query) )
-    echo '<meta http-equiv="refresh" content="' . REFRESH_TIME . '; url=' . basename( __FILE__ ) . "\" />\n";
+    echo '<meta http-equiv="refresh" content="' . REFRESH_TIME . '; url=' . basename( __FILE__ ) . "\"/>\n";
 echo '<title>' . COIN_NAME . ' block explorer &middot; RPC Ace v' . ACE_VERSION . "</title>\n";
 
 echo <<<END

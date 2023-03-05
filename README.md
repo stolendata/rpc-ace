@@ -1,11 +1,11 @@
 RPC Ace (RPC AnyCoin Explorer)
 ==============================
 
-Copyright (c) 2014 - 2015 Robin Leffmann
+Copyright (c) 2014 - 2017 Robin Leffmann
 
 RPC Ace is a simple alternative block explorer written in PHP. It interacts with block chains entirely via RPC, either against a locally running wallet/daemon or remotely over the Internet, and offers optional database storage for quickly accessing previously processed blocks and transactions.
 
-The lightweight nature of RPC Ace comes with a few drawbacks - most notably, the explorer cannot keep track of addresses or total coins generated, and as it uses RPC calls to parse blocks a transaction-heavy block chain (such as Bitcoin) can incur heavy CPU usage and/or long page generation times the first time a set of blocks is parsed. RPC Ace's primary use is quick access to oversight of a block chain; for in-depth needs it's recommended to run a tallying explorer such as Abe.
+The lightweight nature of RPC Ace comes with a few drawbacks - most notably, the explorer cannot keep track of addresses or total coins generated, and as it uses RPC calls to parse blocks a transaction-heavy block chain (such as Bitcoin) can incur heavy CPU usage and/or long page generation times the first time a set of blocks is parsed. RPC Ace's primary use is quick access to oversight of a block chain; for in-depth needs it's recommended to run a tallying explorer such as Abe or Iquidus.
 
 RPC Ace should work with any block chain regardless of what proof-of-work algorithm is used, and has been tested to work with Bitcoin, Litecoin, Dogecoin, Solcoin and a few other block chains, but as it's still at an early stage it may contain bugs. Version 0.6.5 introduced PoS support, which has been tested against a number of popular PoS block chains.
 
@@ -20,26 +20,26 @@ RPC Ace (and the extras) requires PHP version 5.4 or later, with CURL and JSON s
 
 Place `rpcace.php` and `easybitcoin.php` ([get it here](https://github.com/aceat64/EasyBitcoin-PHP)) together in your web directory. The first few lines of `rpcace.php` defines its configurable parameters:
 
-    RPC_HOST = '127.0.0.1'              // Host/IP for the daemon
-    RPC_PORT = 12345                    // RPC port for the daemon
-    RPC_USER = 'username'               // 'rpcuser' from the coin's .conf
-    RPC_PASS = 'password'               // 'rpcpassword' from the coin's .conf
+    RPC_HOST = '127.0.0.1';                   // Host/IP for the daemon
+    RPC_PORT = 12345;                         // RPC port for the daemon
+    RPC_USER = 'username';                    // 'rpcuser' from the coin's .conf
+    RPC_PASS = 'password';                    // 'rpcpassword' from the coin's .conf
 
-    COIN_NAME = 'Somecoin'              // Coin name/title
-    COIN_POS = false                    // Set to true for proof-of-stake coins
+    COIN_NAME = 'Somecoin';                   // Coin name/title
+    COIN_POS = false;                         // Set to true for proof-of-stake coins
 
-    RETURN_JSON = false                 // Set to true to return JSON instead of PHP arrays
-    DATE_FORMAT = 'Y-M-d H:i:s'         // Date format for blocklist
-    BLOCKS_PER_LIST = 12                // Number of blocks to collect for the blocklist
+    RETURN_JSON = false;                      // Set to true to return JSON instead of PHP arrays
+    DATE_FORMAT = 'Y-M-d H:i:s';              // Date format for blocklist
+    BLOCKS_PER_LIST = 12;                     // Number of blocks to collect for the blocklist
 
-    DB_FILE = 'db/somecoin_db.sq3';     // Set to false to disable database storage
+    DB_FILE = 'db/somecoin_db.sq3';           // Set to false to disable database storage
 
     // for the example explorer
-    COIN_HOME = 'http://www.coin.org/'  // Coin website
-    REFRESH_TIME = 180                  // Seconds between automatic HTML page refresh
+    COIN_HOME = 'https://www.somecoin.org/';  // Coin website
+    REFRESH_TIME = 180;                       // Seconds between automatic HTML page refresh
 
 
-For databaste storage it usually suffices to create a directory that is owned and writable by the user the httpd process runs under, and pointing the `DB_FILE` setting to a suitable filename inside that directory.
+For database storage it usually suffices to create a directory that is owned and writable by the user the httpd process runs under, and pointing the `DB_FILE` setting to a suitable filename inside that directory.
 
 To get accurate transaction values your block chain must be reindexed (or built from scratch) with full transaction indexing, by setting `txindex=1` in the coin's .conf file.
 
@@ -67,4 +67,4 @@ DRK: XvHfibq2f1xU6rYqAULVXHLPuRhBawzTZs
 License
 -------
 
-RPC Ace is released under the Creative Commons BY-NC-SA 4.0 license: http://creativecommons.org/licenses/by-nc-sa/4.0/
+RPC Ace is released under the Creative Commons BY-NC-SA 4.0 license: https://creativecommons.org/licenses/by-nc-sa/4.0/
